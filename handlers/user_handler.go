@@ -5,7 +5,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/pyrolass/hotel-reservation-go/db"
-	"github.com/pyrolass/hotel-reservation-go/entities"
 )
 
 type UserHandler struct {
@@ -41,12 +40,19 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 
 func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 
-	user := entities.User{
-		FirstName: "John",
-		LastName:  "Doe",
+	ctx := context.Background()
+
+	users, err := h.userStore.GetAllUsers(ctx)
+
+	if err != nil {
+		return c.Status(404).JSON(
+			map[string]any{
+				"message": err.Error(),
+			},
+		)
 	}
 
 	return c.JSON(
-		user,
+		users,
 	)
 }
