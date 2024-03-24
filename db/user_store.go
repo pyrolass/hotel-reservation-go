@@ -31,8 +31,6 @@ func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 
 func (s *MongoUserStore) GetUserById(ctx context.Context, id string) (*entities.User, error) {
 
-	// validation of id
-
 	oid, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
