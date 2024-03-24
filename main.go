@@ -13,6 +13,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var config = fiber.Config{
+	ErrorHandler: func(c *fiber.Ctx, err error) error {
+
+		return c.Status(500).JSON(
+			map[string]any{
+				"error": err.Error(),
+			},
+		)
+	},
+}
+
 func main() {
 
 	if err := godotenv.Load(); err != nil {
@@ -39,7 +50,7 @@ func main() {
 		}
 	}()
 
-	app := fiber.New()
+	app := fiber.New(config)
 
 	api := app.Group("api/v1")
 
