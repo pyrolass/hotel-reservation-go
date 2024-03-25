@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/pyrolass/hotel-reservation-go/db"
+	"github.com/pyrolass/hotel-reservation-go/entities"
 )
 
 type UserHandler struct {
@@ -40,5 +41,30 @@ func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 
 	return c.JSON(
 		users,
+	)
+}
+
+func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
+
+	var params entities.CreateUserParams
+
+	if err := c.BodyParser(&params); err != nil {
+		return err
+	}
+
+	user, err := entities.NewUserFromParams(params)
+
+	if err != nil {
+		return err
+	}
+
+	insertedUser, err := h.userStore.CreateUser(c.Context(), user)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(
+		insertedUser,
 	)
 }

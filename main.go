@@ -69,9 +69,9 @@ func main() {
 
 	userHandle := handlers.NewUserHandler(db.NewMongoUserStore(client))
 
-	api.Get("/user/", userHandle.HandleGetUsers)
-
+	api.Get("/user", userHandle.HandleGetUsers)
 	api.Get("/user/:id", userHandle.HandleGetUser)
+	api.Post("/user", userHandle.HandlePostUser)
 
 	app.Listen(port)
 }
