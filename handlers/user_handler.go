@@ -52,6 +52,10 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 		return err
 	}
 
+	if err := params.Validate(); err != nil {
+		return err
+	}
+
 	user, err := entities.NewUserFromParams(params)
 
 	if err != nil {

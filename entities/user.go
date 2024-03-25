@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,6 +14,15 @@ type CreateUserParams struct {
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
+
+func (params CreateUserParams) Validate() error {
+	if params.FirstName == "" || params.LastName == "" || params.Email == "" || params.Password == "" {
+		return fmt.Errorf("missing required fields")
+	}
+
+	return nil
+}
+
 type User struct {
 	ID                primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	FirstName         string             `bson:"firstName" json:"firstName"`
