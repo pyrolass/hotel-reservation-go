@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pyrolass/hotel-reservation-go/entities"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,12 +12,16 @@ import (
 
 const userColl = "users"
 
+type Dropper interface {
+	Drop(ctx context.Context) error
+}
 type UserStore interface {
 	GetUserById(ctx context.Context, id string) (*entities.User, error)
 	GetAllUsers(ctx context.Context) ([]*entities.User, error)
 	CreateUser(ctx context.Context, user *entities.User) (*entities.User, error)
 	DeleteUser(ctx context.Context, id string) error
 	UpdateUser(ctx context.Context, id string, user entities.UpdateUserParams) error
+	Dropper
 }
 
 type MongoUserStore struct {
@@ -108,4 +113,10 @@ func (s *MongoUserStore) DeleteUser(ctx context.Context, id string) error {
 	_, err = s.coll.DeleteOne(ctx, bson.M{"_id": oid})
 
 	return err
+}
+
+func (s *MongoUserStore) Drop(ctx context.Context) error {
+
+	fmt.Println("----> Dropping users collection <---")
+	return s.coll.Drop(ctx)
 }
