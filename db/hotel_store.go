@@ -4,12 +4,14 @@ import (
 	"context"
 
 	"github.com/pyrolass/hotel-reservation-go/entities"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type HotelStore interface {
 	InsertHotel(context context.Context, hotel *entities.Hotel) (*entities.Hotel, error)
+	UpdateHotelRoomIds(context context.Context, id string, roomIds []primitive.ObjectID) error
 }
 
 type MongoHotelStore struct {
@@ -37,4 +39,30 @@ func (s *MongoHotelStore) InsertHotel(ctx context.Context, hotel *entities.Hotel
 
 	return hotel, nil
 
+}
+
+func (s *MongoHotelStore) UpdateHotelRoomIds(context context.Context, id string, roomIds []primitive.ObjectID) error {
+
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = s.coll.UpdateOne(context,
+		bson.M{
+			"_id": oid,
+		},
+		bson.M{
+			"$set": bson.M{
+				"rooms": roomIds,
+			},
+		},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

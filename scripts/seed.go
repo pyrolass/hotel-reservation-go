@@ -7,6 +7,7 @@ import (
 
 	"github.com/pyrolass/hotel-reservation-go/db"
 	"github.com/pyrolass/hotel-reservation-go/entities"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -46,10 +47,22 @@ func main() {
 		Location: "France",
 	}
 
-	room := entities.Room{
-		Type:      entities.SinglePerson,
-		BasePrice: 100,
-		Occupied:  false,
+	rooms := []entities.Room{
+		{
+			Type:      entities.SinglePerson,
+			BasePrice: 100,
+			Occupied:  false,
+		},
+		{
+			Type:      entities.DoublePerson,
+			BasePrice: 12.99,
+			Occupied:  false,
+		},
+		{
+			Type:      entities.TriplePerson,
+			BasePrice: 99.99,
+			Occupied:  false,
+		},
 	}
 
 	ctx := context.Background()
@@ -60,15 +73,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	room.HotelID = insertedHotel.ID
+	var roomIds = []primitive.ObjectID{}
 
-	insertedRoom, err := roomStore.InsertRoom(ctx, &room)
+	for _, room := range rooms {
 
-	if err != nil {
-		log.Fatal(err)
+		room.HotelID = insertedHotel.ID
+
+		insertedRoom, err := roomStore.InsertRoom(ctx, &room)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		roomIds = append(roomIds, insertedRoom.ID)
+
+		fmt.Println(insertedRoom)
+
 	}
 
+	hotelStore.UpdateHotelRoomIds(ctx, insertedHotel.ID.Hex(), roomIds)
+
 	fmt.Println(insertedHotel)
-	fmt.Println(insertedRoom)
 
 }
