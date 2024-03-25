@@ -7,8 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"github.com/pyrolass/hotel-reservation-go/db"
-	"github.com/pyrolass/hotel-reservation-go/handlers"
+	"github.com/pyrolass/hotel-reservation-go/routes"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -67,13 +66,7 @@ func main() {
 		},
 	)
 
-	userHandle := handlers.NewUserHandler(db.NewMongoUserStore(client))
-
-	api.Get("/user", userHandle.HandleGetUsers)
-	api.Get("/user/:id", userHandle.HandleGetUser)
-	api.Post("/user", userHandle.HandlePostUser)
-	api.Delete("/user/:id", userHandle.HandleDeleteUser)
-	api.Put("/user/:id", userHandle.HandlePutUser)
+	routes.UserRoutes(api, client)
 
 	app.Listen(port)
 }
