@@ -13,7 +13,7 @@ const userColl = "users"
 
 type UserStore interface {
 	GetUserById(ctx context.Context, id string) (*entities.User, error)
-	GetAllUsers(ctx context.Context) ([]entities.User, error)
+	GetAllUsers(ctx context.Context) ([]*entities.User, error)
 }
 
 type MongoUserStore struct {
@@ -46,8 +46,8 @@ func (s *MongoUserStore) GetUserById(ctx context.Context, id string) (*entities.
 	return &user, nil
 }
 
-func (s *MongoUserStore) GetAllUsers(ctx context.Context) ([]entities.User, error) {
-	var users []entities.User
+func (s *MongoUserStore) GetAllUsers(ctx context.Context) ([]*entities.User, error) {
+	var users []*entities.User
 
 	cursor, err := s.coll.Find(ctx, bson.M{})
 

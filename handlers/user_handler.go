@@ -26,11 +26,7 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 	user, err := h.userStore.GetUserById(ctx, userId)
 
 	if err != nil {
-		return c.Status(404).JSON(
-			map[string]any{
-				"message": err.Error(),
-			},
-		)
+		return err
 	}
 
 	return c.JSON(
@@ -45,11 +41,7 @@ func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	users, err := h.userStore.GetAllUsers(ctx)
 
 	if err != nil {
-		return c.Status(404).JSON(
-			map[string]any{
-				"message": err.Error(),
-			},
-		)
+		return err
 	}
 
 	return c.JSON(
