@@ -15,6 +15,11 @@ type CreateUserParams struct {
 	Password  string `json:"password"`
 }
 
+type UpdateUserParams struct {
+	FirstName string `bson:"firstName" json:"firstName"`
+	LastName  string `bson:"lastName" json:"lastName"`
+}
+
 func (params CreateUserParams) Validate() error {
 	if params.FirstName == "" || params.LastName == "" || params.Email == "" || params.Password == "" {
 		return fmt.Errorf("missing required fields")

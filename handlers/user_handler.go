@@ -91,16 +91,12 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
-	var params map[string]any
+	var params entities.UpdateUserParams
 
 	userId := c.Params("id")
 
 	if err := c.BodyParser(&params); err != nil {
 		return err
-	}
-
-	if params["_id"] != nil {
-		delete(params, "_id")
 	}
 
 	err := h.userStore.UpdateUser(c.Context(), userId, params)
