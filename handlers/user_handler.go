@@ -44,6 +44,28 @@ func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	)
 }
 
+func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
+
+	return nil
+}
+
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
+
+	userId := c.Params("id")
+
+	err := h.userStore.DeleteUser(c.Context(), userId)
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(200).JSON(
+		map[string]string{
+			"message": "User deleted",
+		},
+	)
+}
+
 func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 
 	var params entities.CreateUserParams

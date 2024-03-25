@@ -72,6 +72,7 @@ func main() {
 	api.Get("/user", userHandle.HandleGetUsers)
 	api.Get("/user/:id", userHandle.HandleGetUser)
 	api.Post("/user", userHandle.HandlePostUser)
+	api.Delete("/user/:id", userHandle.HandleDeleteUser)
 
 	app.Listen(port)
 }
