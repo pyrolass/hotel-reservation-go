@@ -59,5 +59,9 @@ func (s *MongoUserStore) GetAllUsers(ctx context.Context) ([]*entities.User, err
 		return nil, err
 	}
 
+	if users == nil {
+		return []*entities.User{}, nil
+	}
+
 	return users, nil
 }
