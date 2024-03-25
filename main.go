@@ -51,11 +51,11 @@ func main() {
 
 	app := fiber.New(config)
 
-	api := app.Group("api/v1")
-
 	port := ":3000"
 
-	api.Get(
+	router := app.Group("api/v1")
+
+	router.Get(
 		"/ping",
 		func(c *fiber.Ctx) error {
 			return c.JSON(
@@ -66,7 +66,7 @@ func main() {
 		},
 	)
 
-	routes.UserRoutes(api, client)
+	routes.UserRoutes(router, client)
 
 	app.Listen(port)
 }
