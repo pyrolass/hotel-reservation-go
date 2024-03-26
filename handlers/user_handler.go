@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/pyrolass/hotel-reservation-go/db"
 	"github.com/pyrolass/hotel-reservation-go/entities"
+	"github.com/pyrolass/hotel-reservation-go/middleware"
 )
 
 type UserHandler struct {
@@ -85,8 +86,17 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 		return err
 	}
 
+	token, err := middleware.GenerateToken(*insertedUser)
+
+	if err != nil {
+		return err
+	}
+
 	return c.JSON(
-		insertedUser,
+		map[string]any{
+			"token": token,
+			"user":  insertedUser,
+		},
 	)
 }
 
