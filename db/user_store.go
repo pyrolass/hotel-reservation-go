@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pyrolass/hotel-reservation-go/common"
 	"github.com/pyrolass/hotel-reservation-go/entities"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -53,7 +54,7 @@ func (s *MongoUserStore) GetUserById(ctx context.Context, id string) (*entities.
 	oid, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		return nil, err
+		return nil, common.InvalidID()
 	}
 
 	var user entities.User

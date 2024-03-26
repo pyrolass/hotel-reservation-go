@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/pyrolass/hotel-reservation-go/common"
 	"github.com/pyrolass/hotel-reservation-go/entities"
 )
 
@@ -15,17 +16,13 @@ func JWTAuthentication(c *fiber.Ctx) error {
 	token, ok := c.GetReqHeaders()["Authorization"]
 
 	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Unauthorized",
-		})
+		return common.Unauthorized()
 	}
 
 	tokenClaim, err := verifyToken(strings.Split(token[0], " ")[1])
 
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Unauthorized",
-		})
+		return common.Unauthorized()
 	}
 
 	claims := tokenClaim.(jwt.MapClaims)
@@ -52,7 +49,7 @@ func GenerateToken(user entities.User) (string, error) {
 	tokenString, err := token.SignedString([]byte(secretKey))
 
 	if err != nil {
-		return "", err
+		return "", common.Unauthorized()
 	}
 
 	return tokenString, nil

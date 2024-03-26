@@ -7,6 +7,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+
+	"github.com/pyrolass/hotel-reservation-go/common"
 	"github.com/pyrolass/hotel-reservation-go/routes"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -14,6 +16,13 @@ import (
 
 var config = fiber.Config{
 	ErrorHandler: func(c *fiber.Ctx, err error) error {
+		if apiError, ok := err.(common.ApiError); ok {
+			return c.Status(apiError.Code).JSON(
+				map[string]any{
+					"error": apiError.Message,
+				},
+			)
+		}
 
 		return c.Status(500).JSON(
 			map[string]any{

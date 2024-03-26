@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 
+	"github.com/pyrolass/hotel-reservation-go/common"
 	"github.com/pyrolass/hotel-reservation-go/entities"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -65,7 +66,7 @@ func (s *MongoHotelStore) UpdateHotelRoomIds(context context.Context, id string,
 	oid, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		return err
+		return common.InvalidID()
 	}
 
 	_, err = s.coll.UpdateOne(context,
