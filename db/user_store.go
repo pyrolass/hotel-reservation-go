@@ -19,6 +19,7 @@ type UserStore interface {
 	CreateUser(ctx context.Context, user *entities.User) (*entities.User, error)
 	DeleteUser(ctx context.Context, id string) error
 	UpdateUser(ctx context.Context, id string, user entities.UpdateUserParams) error
+	GetUserByEmail(ctx context.Context, email string) (*entities.User, error)
 	Dropper
 }
 
@@ -34,6 +35,17 @@ func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 		client: client,
 		coll:   coll,
 	}
+}
+
+func (s *MongoUserStore) GetUserByEmail(ctx context.Context, email string) (*entities.User, error) {
+
+	var user entities.User
+
+	if err := s.coll.FindOne(ctx, bson.M{"email": email}).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (s *MongoUserStore) GetUserById(ctx context.Context, id string) (*entities.User, error) {

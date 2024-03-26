@@ -37,6 +37,11 @@ type User struct {
 	// Role      string `bson:"role"`
 }
 
+type LoginParams struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func NewUserFromParams(params CreateUserParams) (*User, error) {
 	enpw, err := bcrypt.GenerateFromPassword(
 		[]byte(params.Password),
@@ -54,4 +59,9 @@ func NewUserFromParams(params CreateUserParams) (*User, error) {
 		EncryptedPassword: string(enpw),
 	}, nil
 
+}
+
+func CheckPasswordHash(password string, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

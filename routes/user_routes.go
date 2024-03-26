@@ -14,6 +14,8 @@ func UserRoutes(router fiber.Router, client *mongo.Client) {
 
 	router.Get("/user", middleware.JWTAuthentication, userHandle.HandleGetUsers)
 	router.Get("/user/:id", userHandle.HandleGetUser)
+	router.Post("/user/login", userHandle.HandleUserLogin)
+
 	router.Post("/user", userHandle.HandlePostUser)
 	router.Delete("/user/:id", userHandle.HandleDeleteUser)
 	router.Put("/user/:id", userHandle.HandlePutUser)

@@ -62,6 +62,41 @@ func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
 	)
 }
 
+func (h *UserHandler) HandleUserLogin(c *fiber.Ctx) error {
+	var loginParams entities.LoginParams
+
+	if err := c.BodyParser(&loginParams); err != nil {
+		return err
+	}
+
+	user, err := h.userStore.GetUserByEmail(c.Context(), loginParams.Email)
+
+	if err != nil {
+		return err
+	}
+
+	if !entities.CheckPasswordHash(loginParams.Password, user.EncryptedPassword) {
+		return c.Status(401).JSON(
+			map[string]string{
+				"message": "Wrong Creds",
+			},
+		)
+	}
+
+	token, err := middleware.GenerateToken(*user)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(
+		map[string]any{
+			"message": "Success",
+			"token":   token,
+		},
+	)
+}
+
 func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 
 	var params entities.CreateUserParams
