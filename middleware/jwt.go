@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -12,8 +11,6 @@ import (
 )
 
 func JWTAuthentication(c *fiber.Ctx) error {
-
-	fmt.Println("jwt triggered")
 
 	token, ok := c.GetReqHeaders()["Authorization"]
 
