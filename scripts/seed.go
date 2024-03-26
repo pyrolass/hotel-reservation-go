@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/pyrolass/hotel-reservation-go/db"
 	"github.com/pyrolass/hotel-reservation-go/entities"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,23 +17,27 @@ import (
 func main() {
 	fmt.Println("Seeding database...")
 
-	// if err := godotenv.Load(); err != nil {
-	// 	log.Println("No .env file found")
-	// }
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
 
-	// uri := os.Getenv("MONGODB_URI")
+	uri := os.Getenv("MONGODB_URI")
 
-	// if uri == "" {
-	// 	log.Fatal("You must set your 'MONGODB_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
-	// }
+	if uri == "" {
+		log.Fatal("You must set your 'MONGODB_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
+	}
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb+srv://pyro:LAS99ovi@cluster0.syyndk3.mongodb.net/hotel-reservation?retryWrites=true&w=majority&appName=Cluster0"))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 
 	if err != nil {
 		panic(err)
 	}
 
 	println("Connected to MongoDB!")
+
+	if err := client.Database(db.DBNAME).Drop(context.Background()); err != nil {
+		panic(err)
+	}
 
 	defer func() {
 		if err := client.Disconnect(context.TODO()); err != nil {

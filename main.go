@@ -67,6 +67,7 @@ func main() {
 	)
 
 	routes.UserRoutes(router, client)
+	routes.HotelRoutes(router, client)
 
 	app.Listen(port)
 }
